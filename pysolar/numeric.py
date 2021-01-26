@@ -28,6 +28,7 @@ To force builtins math module usage when numpy is available:
     pysolar.use_math()
 """
 
+import datetime
 from math import degrees, cos, sin, radians, tan, pi
 from math import acos, atan, asin, atan2, exp, e
 
@@ -59,6 +60,12 @@ tm_yday = tm_yday_math
 
 
 def tm_yday_numpy(d):
+    if isinstance(d, datetime.datetime):
+        """ numpy no longer accepts parsing timezone aware datetimes
+        convert input to UTC and make it timezone unaware
+        """
+        d = d.astimezone(tz=datetime.timezone.utc).replace(tzinfo=None)
+    
     dd = numpy.array(d, dtype='datetime64[D]')
     dy = numpy.array(d, dtype='datetime64[Y]')
     return (dd - dy).astype('int') + 1
@@ -71,6 +78,12 @@ tm_hour = tm_hour_math
 
 
 def tm_hour_numpy(d):
+    if isinstance(d, datetime.datetime):
+        """ numpy no longer accepts parsing timezone aware datetimes
+        convert input to UTC and make it timezone unaware
+        """
+        d = d.astimezone(tz=datetime.timezone.utc).replace(tzinfo=None)
+    
     dh = numpy.array(d, dtype='datetime64[h]')
     dd = numpy.array(d, dtype='datetime64[D]')
     return (dh - dd).astype('int')
@@ -83,6 +96,12 @@ tm_min = tm_min_math
 
 
 def tm_min_numpy(d):
+    if isinstance(d, datetime.datetime):
+        """ numpy no longer accepts parsing timezone aware datetimes
+        convert input to UTC and make it timezone unaware
+        """
+        d = d.astimezone(tz=datetime.timezone.utc).replace(tzinfo=None)
+    
     dm = numpy.array(d, dtype='datetime64[m]')
     dh = numpy.array(d, dtype='datetime64[h]')
     return (dm - dh).astype('int')
